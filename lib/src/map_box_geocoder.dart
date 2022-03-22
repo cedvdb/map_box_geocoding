@@ -17,6 +17,9 @@ class MapBoxGeocoder {
   }) async {
     final uri = _buildUri(endpoint, searchText, params.toMap());
     final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw response.body;
+    }
     return MapBoxResponse.fromJson(response.body);
   }
 
@@ -26,9 +29,10 @@ class MapBoxGeocoder {
     ForwardQueryParams params = const ForwardQueryParams(),
   }) async {
     final uri = _buildUri(endpoint, coordinates.toParamStr(), params.toMap());
-    print(uri);
     final response = await http.get(uri);
-    print(response.body);
+    if (response.statusCode != 200) {
+      throw response.body;
+    }
     return MapBoxResponse.fromJson(response.body);
   }
 
