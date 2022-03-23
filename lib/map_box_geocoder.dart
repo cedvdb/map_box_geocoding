@@ -3,3 +3,4 @@
 export 'src/map_box_geocoder.dart';
 export 'src/values.dart';
 export 'src/map_box_query_params.dart';
+export 'src/map_box_response.dart';
