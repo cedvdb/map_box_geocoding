@@ -1,3 +1,7 @@
+## 0.0.5
+
+- use correct params for reverse
+
 ## 0.0.4+1
 
 - documentation

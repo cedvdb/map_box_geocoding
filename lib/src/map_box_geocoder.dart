@@ -24,7 +24,7 @@ class MapBoxGeocoder {
   Future<MapBoxResponse> reverseSearch(
     LatLon coordinates, {
     String endpoint = 'mapbox.places',
-    ForwardQueryParams params = const ForwardQueryParams(),
+    ReverseQueryParams params = const ReverseQueryParams(),
   }) async {
     final uri = _buildUri(endpoint, coordinates.toParamStr(), params.toMap());
     final response = await http.get(uri);

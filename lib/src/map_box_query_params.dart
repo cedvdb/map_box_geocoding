@@ -3,6 +3,8 @@ import 'values.dart';
 class ForwardQueryParams {
   final bool? autocomplete;
   final List<double>? bbox;
+
+  /// isecode
   final String? country;
   final bool? fuzzyMatch;
   final String? language;
@@ -43,6 +45,7 @@ class ForwardQueryParams {
 }
 
 class ReverseQueryParams {
+  /// isocode
   final String? country;
   final String? language;
   final int? limit;
