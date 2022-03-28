@@ -26,6 +26,11 @@ class MapBoxResponse {
 
   factory MapBoxResponse.fromJson(String source) =>
       MapBoxResponse.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'MapBoxResponse(type: $type, query: $query, features: $features, attribution: $attribution)';
+  }
 }
 
 class Feature {
@@ -79,6 +84,11 @@ class Feature {
 
   factory Feature.fromJson(String source) =>
       Feature.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Feature(id: $id, type: $type, placeType: $placeType, relevance: $relevance, address: $address, properties: $properties, text: $text, placeName: $placeName, bbox: $bbox, center: $center, geometry: $geometry, context: $context)';
+  }
 }
 
 class Properties {
@@ -126,6 +136,9 @@ class Geometry {
 
   factory Geometry.fromJson(String source) =>
       Geometry.fromMap(json.decode(source));
+
+  @override
+  String toString() => 'Geometry(type: $type, coordinates: $coordinates)';
 }
 
 class Context {
@@ -133,6 +146,7 @@ class Context {
   final String wikidata;
   final String text;
   final String? shortCode;
+
   Context({
     required this.id,
     required this.wikidata,
@@ -145,10 +159,15 @@ class Context {
       id: map['id'] ?? '',
       wikidata: map['wikidata'] ?? '',
       text: map['text'] ?? '',
-      shortCode: map['shortCode'],
+      shortCode: map['short_code'],
     );
   }
 
   factory Context.fromJson(String source) =>
       Context.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Context(id: $id, wikidata: $wikidata, text: $text, shortCode: $shortCode)';
+  }
 }
