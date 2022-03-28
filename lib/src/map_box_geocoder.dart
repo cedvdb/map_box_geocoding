@@ -1,15 +1,12 @@
-import 'package:map_box_geocoder/map_box_geocoder.dart';
-import 'package:map_box_geocoder/src/map_box_response.dart';
-
 import 'package:http/http.dart' as http;
-
-import 'map_box_query_params.dart';
+import 'package:map_box_geocoder/map_box_geocoder.dart';
 
 class MapBoxGeocoder {
   final String _accessToken;
 
   MapBoxGeocoder(this._accessToken);
 
+  /// The forward geocoding query type allows you to look up a single location by name and returns its geographic coordinates.
   Future<MapBoxResponse> forwardSearch(
     String searchText, {
     String endpoint = 'mapbox.places',
@@ -23,6 +20,7 @@ class MapBoxGeocoder {
     return MapBoxResponse.fromJson(response.body);
   }
 
+  /// The reverse geocoding query type allows you to look up a single pair of coordinates and returns the geographic feature or features that exist at that location.
   Future<MapBoxResponse> reverseSearch(
     LatLon coordinates, {
     String endpoint = 'mapbox.places',
