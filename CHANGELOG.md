@@ -1,3 +1,8 @@
+
+## 0.0.4
+
+- fix country short_code missing
+
 ## 0.0.3
 
 - export response
