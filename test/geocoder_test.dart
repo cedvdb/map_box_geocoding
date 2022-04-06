@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:map_box_geocoder/map_box_geocoder.dart';
-import 'package:map_box_geocoder/src/map_box_response.dart';
 import 'package:test/test.dart';
 
 final streetCoords = LatLon(
@@ -27,6 +28,9 @@ void main(List<String> args) {
           proximity: LatLon(48.8566, 2.3522),
           language: 'en',
           types: [Types.place],
+          fuzzyMatch: true,
+          autocomplete: true,
+          limit: 1,
         ),
       );
       final found = result.features
@@ -37,7 +41,13 @@ void main(List<String> args) {
 
   group('reverse geocoding', () {
     test('should give address', () async {
-      final result = await geocoder.reverseSearch(streetCoords);
+      final result = await geocoder.reverseSearch(
+        streetCoords,
+        params: ReverseQueryParams(
+          language: 'en',
+          limit: 1,
+        ),
+      );
       expect(result.features.first.text.contains('Lecène'), isTrue);
     });
   });

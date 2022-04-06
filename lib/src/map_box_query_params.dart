@@ -30,14 +30,16 @@ class ForwardQueryParams {
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     // we have nullables so defaults values are respected
-    if (autocomplete != null) map['autocomplete'] = autocomplete;
-    if (bbox != null) map['bbox'] = bbox;
+    if (autocomplete != null) map['autocomplete'] = autocomplete.toString();
+    if (bbox != null)
+      map['bbox'] =
+          bbox != null ? bbox!.map((value) => value.toString()) : null;
     if (country != null) map['country'] = country;
-    if (fuzzyMatch != null) map['fuzzyMatch'] = fuzzyMatch;
+    if (fuzzyMatch != null) map['fuzzyMatch'] = fuzzyMatch.toString();
     if (language != null) map['language'] = language;
-    if (limit != null) map['limit'] = limit;
+    if (limit != null) map['limit'] = limit.toString();
     if (proximity != null) map['proximity'] = proximity!.toParamStr();
-    if (routing != null) map['routing'] = routing;
+    if (routing != null) map['routing'] = routing.toString();
     if (types != null) map['types'] = types!.map((type) => type.name).toList();
     if (worldview != null) map['worldview'] = worldview;
     return map;
@@ -67,8 +69,8 @@ class ReverseQueryParams {
     // we have nullables so defaults values are respected
     if (country != null) map['country'] = country;
     if (language != null) map['language'] = language;
-    if (limit != null) map['limit'] = limit;
-    if (routing != null) map['routing'] = routing;
+    if (limit != null) map['limit'] = limit.toString();
+    if (routing != null) map['routing'] = routing.toString();
     if (types != null) map['types'] = types!.map((type) => type.name).toList();
     if (worldview != null) map['worldview'] = worldview;
     if (reverseMode != null) map['reverseMode'] = reverseMode!.name;

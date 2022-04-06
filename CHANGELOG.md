@@ -1,3 +1,7 @@
+## 0.0.6
+
+- fix error where uri params were not stringified
+
 ## 0.0.5
 
 - use correct params for reverse
