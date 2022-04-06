@@ -1,6 +1,6 @@
 name: map_box_geocoder
 description: wrapper around map box geocoder api
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/cedvdb/map_box_geocoding
 
 environment:
