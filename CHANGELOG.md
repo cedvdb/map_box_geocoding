@@ -1,3 +1,7 @@
+## 0.0.7
+
+- fix casting issue
+
 ## 0.0.6
 
 - fix error where uri params were not stringified

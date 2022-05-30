@@ -73,7 +73,7 @@ class Feature {
           : null,
       text: map['text'] ?? '',
       placeName: map['placeName'] ?? '',
-      bbox: map['bbox'] != null ? List<double>.from(map['bbox']) : null,
+      bbox: map['bbox'] != null ? List.from(map['bbox']).cast<double>() : null,
       center: LatLon.fromList(map['center']),
       geometry: Geometry.fromMap(map['geometry']),
       context: map['context'] != null

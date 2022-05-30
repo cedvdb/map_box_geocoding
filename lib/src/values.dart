@@ -22,6 +22,9 @@ class LatLon {
   }
 
   factory LatLon.fromList(List<dynamic> list) {
-    return LatLon(list[1], list[0]);
+    return LatLon(
+      (list[1] as num).toDouble(),
+      (list[0] as num).toDouble(),
+    );
   }
 }
