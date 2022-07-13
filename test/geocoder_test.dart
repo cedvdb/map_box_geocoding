@@ -1,6 +1,8 @@
 import 'package:map_box_geocoder/map_box_geocoder.dart';
 import 'package:test/test.dart';
 
+// give map box token to run test with dart test/geocoder_test.dart MAP_BOX_TOKEN
+
 final streetCoords = LatLon(
   48.822571,
   2.353356,
@@ -25,7 +27,7 @@ void main(List<String> args) {
         params: ForwardQueryParams(
           proximity: LatLon(48.8566, 2.3522),
           language: 'en',
-          types: [Types.place],
+          types: [PlaceType.place],
           fuzzyMatch: true,
           autocomplete: true,
           limit: 1,

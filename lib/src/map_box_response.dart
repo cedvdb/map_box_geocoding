@@ -36,7 +36,7 @@ class MapBoxResponse {
 class Feature {
   final String id;
   final String type;
-  final String placeType;
+  final List<PlaceType> placeType;
   final double relevance;
   final String? address;
   final Properties? properties;
@@ -65,7 +65,10 @@ class Feature {
     return Feature(
       id: map['id'] ?? '',
       type: map['type'] ?? '',
-      placeType: map['place_type'] ?? '',
+      placeType: (map['place_type'] as List<dynamic>)
+          .cast<String>()
+          .map(PlaceType.values.byName)
+          .toList(),
       relevance: map['relevance']?.toDouble() ?? 0.0,
       address: map['address'],
       properties: map['properties'] != null

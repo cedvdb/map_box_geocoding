@@ -11,7 +11,7 @@ class ForwardQueryParams {
   final int? limit;
   final LatLon? proximity;
   final bool? routing;
-  final List<Types>? types;
+  final List<PlaceType>? types;
   final String? worldview;
 
   const ForwardQueryParams({
@@ -53,7 +53,7 @@ class ReverseQueryParams {
   final String? language;
   final int? limit;
   final bool? routing;
-  final List<Types>? types;
+  final List<PlaceType>? types;
   final String? worldview;
   final ReverseMode? reverseMode;
   const ReverseQueryParams({

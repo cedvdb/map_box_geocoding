@@ -1,7 +1,11 @@
+## 0.0.10
+
+- hotfix for region
+- made placeType a list of PlaceType
+
 ## 0.0.9
 
 - added region to types
-
 
 ## 0.0.8
 
