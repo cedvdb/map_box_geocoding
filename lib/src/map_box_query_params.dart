@@ -31,9 +31,10 @@ class ForwardQueryParams {
     final map = <String, dynamic>{};
     // we have nullables so defaults values are respected
     if (autocomplete != null) map['autocomplete'] = autocomplete.toString();
-    if (bbox != null)
+    if (bbox != null) {
       map['bbox'] =
           bbox != null ? bbox!.map((value) => value.toString()) : null;
+    }
     if (country != null) map['country'] = country;
     if (fuzzyMatch != null) map['fuzzyMatch'] = fuzzyMatch.toString();
     if (language != null) map['language'] = language;

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:map_box_geocoder/map_box_geocoder.dart';
 import 'package:test/test.dart';
 
