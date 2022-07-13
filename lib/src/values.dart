@@ -3,6 +3,7 @@ enum Types {
   postcode,
   district,
   place,
+  region,
   locality,
   neighborhood,
   address,

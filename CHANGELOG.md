@@ -1,3 +1,8 @@
+## 0.0.9
+
+- added region to types
+
+
 ## 0.0.8
 
 - fix place type which wasn't correctly parsed
