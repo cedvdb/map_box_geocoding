@@ -1,3 +1,7 @@
+## 0.0.8
+
+- fix place type which wasn't correctly parsed
+
 ## 0.0.7
 
 - fix casting issue

@@ -65,7 +65,7 @@ class Feature {
     return Feature(
       id: map['id'] ?? '',
       type: map['type'] ?? '',
-      placeType: map['placeType'] ?? '',
+      placeType: map['place_type'] ?? '',
       relevance: map['relevance']?.toDouble() ?? 0.0,
       address: map['address'],
       properties: map['properties'] != null
