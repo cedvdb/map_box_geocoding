@@ -1,3 +1,7 @@
+## 0.0.11
+
+- fix place name which wasn't correctly parsed
+
 ## 0.0.10
 
 - hotfix for region
