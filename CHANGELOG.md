@@ -1,3 +1,7 @@
+## 0.0.12
+
+- update readme
+
 ## 0.0.11
 
 - fix place name which wasn't correctly parsed
