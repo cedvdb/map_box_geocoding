@@ -1,1 +1,1 @@
-A simple command-line application.
+Wrapper for mapbox geocoding calls
