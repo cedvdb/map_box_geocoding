@@ -1,3 +1,7 @@
+## 0.1.0
+
+- upgrade http dependency
+
 ## 0.0.12
 
 - update readme
