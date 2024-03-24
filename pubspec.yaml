@@ -1,14 +1,14 @@
 name: map_box_geocoder
 description: wrapper around map box geocoder api
-version: 0.1.1
+version: 1.0.0
 homepage: https://github.com/cedvdb/map_box_geocoding
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
-  http: ^1.0.0
+  http: ^1.2.1
 
 dev_dependencies:
-  lints: ^1.0.1
+  lints: ^3.0.0
   test: ^1.25.2

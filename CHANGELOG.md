@@ -1,3 +1,6 @@
+## 1.0.0
+- upgrade dependencies
+
 ## 0.1.1
 
 - relax dependency upgrade
