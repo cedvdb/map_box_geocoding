@@ -15,7 +15,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  map_box_geocoder: ^1.2.0
+  map_box_geocoder: ^2.0.0
 ```
 
 Then run:
@@ -28,12 +28,39 @@ dart pub get
 
 ## Usage
 
-### Instantiate the geocoder
+This package exposes two focused API clients that mirror Mapbox's own API structure:
+
+| Class | Mapbox API | Methods |
+|-------|-----------|---------|
+| `MapBoxGeocoding` | [Geocoding API](https://docs.mapbox.com/api/search/geocoding/) | `forwardSearch`, `reverseSearch` |
+| `MapBoxSearchBox` | [Search Box API](https://docs.mapbox.com/api/search/search-box/) | `forward`, `suggest`, `retrieve` |
+
+You can use them directly or through the `MapBoxGeocoder` facade.
+
+### Using the facade
 
 ```dart
 import 'package:map_box_geocoder/map_box_geocoder.dart';
 
 final geocoder = MapBoxGeocoder('YOUR_MAPBOX_ACCESS_TOKEN');
+
+// Legacy Geocoding API
+final result = await geocoder.geocoding.forwardSearch('Paris, France');
+
+// Search Box API
+final suggestions = await geocoder.searchBox.suggest(
+  'Eiffel',
+  params: SuggestQueryParams(sessionToken: mySessionToken, language: 'en'),
+);
+```
+
+### Using the clients directly
+
+```dart
+import 'package:map_box_geocoder/map_box_geocoder.dart';
+
+final geocoding = MapBoxGeocoding('YOUR_MAPBOX_ACCESS_TOKEN');
+final searchBox = MapBoxSearchBox('YOUR_MAPBOX_ACCESS_TOKEN');
 ```
 
 ---
@@ -43,7 +70,7 @@ final geocoder = MapBoxGeocoder('YOUR_MAPBOX_ACCESS_TOKEN');
 Convert a place name / address string into geographic coordinates.
 
 ```dart
-final response = await geocoder.forwardSearch(
+final response = await geocoding.forwardSearch(
   'Paris, France',
   params: ForwardQueryParams(
     language: 'en',
@@ -78,7 +105,7 @@ for (final feature in response.features) {
 Convert geographic coordinates into a human-readable place name.
 
 ```dart
-final response = await geocoder.reverseSearch(
+final response = await geocoding.reverseSearch(
   LatLon(48.8566, 2.3522), // latitude, longitude
   params: ReverseQueryParams(
     language: 'en',
@@ -110,7 +137,7 @@ for (final feature in response.features) {
 Uses the newer [Mapbox Search Box API](https://docs.mapbox.com/api/search/search-box/) which supports POI category filtering.
 
 ```dart
-final response = await geocoder.searchBoxForward(
+final response = await searchBox.forward(
   'coffee shop',
   params: SearchBoxQueryParams(
     proximity: LatLon(48.8566, 2.3522),
@@ -147,7 +174,7 @@ import 'package:uuid/uuid.dart'; // any UUID generator
 final sessionToken = const Uuid().v4();
 
 // 1. Get suggestions as the user types
-final suggestResponse = await geocoder.suggest(
+final suggestResponse = await searchBox.suggest(
   'Eiffel',
   params: SuggestQueryParams(
     sessionToken: sessionToken,
@@ -162,7 +189,7 @@ for (final suggestion in suggestResponse.suggestions) {
 
 // 2. Retrieve full feature after the user picks a suggestion
 final mapboxId = suggestResponse.suggestions.first.mapboxId;
-final fullResponse = await geocoder.retrieve(
+final fullResponse = await searchBox.retrieve(
   mapboxId,
   sessionToken: sessionToken,
 );
@@ -192,7 +219,7 @@ print(fullResponse.features.first.center);
 
 ## Response structure
 
-Both `forwardSearch`, `reverseSearch`, `searchBoxForward`, and `retrieve` return a `MapBoxResponse`:
+Both `forwardSearch`, `reverseSearch`, `forward`, and `retrieve` return a `MapBoxResponse`:
 
 ```
 MapBoxResponse

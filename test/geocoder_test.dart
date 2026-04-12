@@ -12,20 +12,34 @@ final street = '7 Rue du Dr. Lecène, Paris, France';
 void main() {
   final accessToken = const String.fromEnvironment('MAP_BOX_TOKEN');
   late MapBoxGeocoder geocoder;
+  late MapBoxGeocoding geocoding;
+  late MapBoxSearchBox searchBox;
 
   setUp(() {
     geocoder = MapBoxGeocoder(accessToken);
+    geocoding = MapBoxGeocoding(accessToken);
+    searchBox = MapBoxSearchBox(accessToken);
+  });
+
+  group('MapBoxGeocoder facade', () {
+    test('exposes a geocoding client', () {
+      expect(geocoder.geocoding, isA<MapBoxGeocoding>());
+    });
+
+    test('exposes a searchBox client', () {
+      expect(geocoder.searchBox, isA<MapBoxSearchBox>());
+    });
   });
 
   group('forward geocoding', () {
     test('Should find exact coordinates of address', () async {
-      final result = await geocoder.forwardSearch(street);
+      final result = await geocoding.forwardSearch(street);
       final parisStreet = result.features.first;
       expect(parisStreet.center.latitude, equals(streetCoords.latitude));
       expect(parisStreet.center.longitude, equals(streetCoords.longitude));
     });
     test('Should give predictions', () async {
-      final result = await geocoder.forwardSearch(
+      final result = await geocoding.forwardSearch(
         'Pa',
         params: ForwardQueryParams(
           proximity: LatLon(48.8566, 2.3522),
@@ -44,7 +58,7 @@ void main() {
 
   group('reverse geocoding', () {
     test('should give address', () async {
-      final result = await geocoder.reverseSearch(
+      final result = await geocoding.reverseSearch(
         streetCoords,
         params: ReverseQueryParams(
           language: 'en',
@@ -57,7 +71,7 @@ void main() {
 
   group('search box forward', () {
     test('Should find POIs by name', () async {
-      final result = await geocoder.searchBoxForward(
+      final result = await searchBox.forward(
         'coffee',
         params: SearchBoxQueryParams(
           proximity: LatLon(48.8566, 2.3522),
@@ -69,7 +83,7 @@ void main() {
     });
 
     test('Should filter POIs by category', () async {
-      final result = await geocoder.searchBoxForward(
+      final result = await searchBox.forward(
         'coffee',
         params: SearchBoxQueryParams(
           proximity: LatLon(48.8566, 2.3522),
@@ -86,7 +100,7 @@ void main() {
     const sessionToken = 'test-session-uuid-1234';
 
     test('Should return suggestions for a query', () async {
-      final result = await geocoder.suggest(
+      final result = await searchBox.suggest(
         'Starbucks',
         params: SuggestQueryParams(
           proximity: LatLon(48.8566, 2.3522),
@@ -102,7 +116,7 @@ void main() {
     });
 
     test('Should retrieve full feature for a suggestion', () async {
-      final suggestResult = await geocoder.suggest(
+      final suggestResult = await searchBox.suggest(
         'Starbucks',
         params: SuggestQueryParams(
           proximity: LatLon(48.8566, 2.3522),
@@ -114,7 +128,7 @@ void main() {
       expect(suggestResult.suggestions, isNotEmpty);
       final mapboxId = suggestResult.suggestions.first.mapboxId;
 
-      final retrieveResult = await geocoder.retrieve(
+      final retrieveResult = await searchBox.retrieve(
         mapboxId,
         sessionToken: sessionToken,
       );
@@ -125,7 +139,7 @@ void main() {
     });
 
     test('Should pass session token in suggest and retrieve', () async {
-      final suggestResult = await geocoder.suggest(
+      final suggestResult = await searchBox.suggest(
         'coffee',
         params: SuggestQueryParams(
           proximity: LatLon(48.8566, 2.3522),
@@ -137,7 +151,7 @@ void main() {
       expect(suggestResult.suggestions, isNotEmpty);
 
       final mapboxId = suggestResult.suggestions.first.mapboxId;
-      final retrieveResult = await geocoder.retrieve(
+      final retrieveResult = await searchBox.retrieve(
         mapboxId,
         sessionToken: sessionToken,
       );

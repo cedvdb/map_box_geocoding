@@ -1,134 +1,41 @@
-import 'package:http/http.dart' as http;
-import 'package:map_box_geocoder/map_box_geocoder.dart';
+import 'package:map_box_geocoder/src/map_box_geocoding.dart';
+import 'package:map_box_geocoder/src/map_box_search_box.dart';
 
+export 'map_box_geocoding.dart';
+export 'map_box_search_box.dart';
+
+/// Facade that provides access to both Mapbox API clients.
+///
+/// Use [geocoding] for the legacy [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/)
+/// (forward and reverse geocoding), and [searchBox] for the
+/// [Mapbox Search Box API](https://docs.mapbox.com/api/search/search-box/)
+/// (forward search, autocomplete suggestions, and feature retrieval).
+///
+/// ```dart
+/// final geocoder = MapBoxGeocoder('YOUR_MAPBOX_ACCESS_TOKEN');
+///
+/// // Legacy Geocoding API
+/// final result = await geocoder.geocoding.forwardSearch('Paris, France');
+///
+/// // Search Box API
+/// final suggestions = await geocoder.searchBox.suggest(
+///   'Eiffel',
+///   params: SuggestQueryParams(sessionToken: sessionToken),
+/// );
+/// ```
 class MapBoxGeocoder {
-  final String _accessToken;
-
-  MapBoxGeocoder(this._accessToken);
-
-  /// The forward geocoding query type allows you to look up a single location by name and returns its geographic coordinates.
-  Future<MapBoxResponse> forwardSearch(
-    String searchText, {
-    String endpoint = 'mapbox.places',
-    ForwardQueryParams params = const ForwardQueryParams(),
-  }) async {
-    final uri = _buildUri(endpoint, searchText, params.toMap());
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw response.body;
-    }
-    return MapBoxResponse.fromJson(response.body);
-  }
-
-  /// The reverse geocoding query type allows you to look up a single pair of coordinates and returns the geographic feature or features that exist at that location.
-  Future<MapBoxResponse> reverseSearch(
-    LatLon coordinates, {
-    String endpoint = 'mapbox.places',
-    ReverseQueryParams params = const ReverseQueryParams(),
-  }) async {
-    final uri = _buildUri(endpoint, coordinates.toParamStr(), params.toMap());
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw response.body;
-    }
-    return MapBoxResponse.fromJson(response.body);
-  }
-
-  /// Search for places using the Mapbox Search Box API.
-  /// Unlike the legacy Geocoding API, the Search Box API supports filtering by
-  /// POI category via [SearchBoxQueryParams.poiCategories].
-  Future<MapBoxResponse> searchBoxForward(
-    String searchText, {
-    SearchBoxQueryParams params = const SearchBoxQueryParams(),
-  }) async {
-    final uri = _buildSearchBoxUri(searchText, params.toMap());
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw response.body;
-    }
-    return MapBoxResponse.fromJson(response.body);
-  }
-
-  /// Returns lightweight autocomplete suggestions for [searchText] using the
-  /// Search Box `/suggest` endpoint.
+  /// Client for the legacy [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/).
   ///
-  /// The suggestions do **not** contain full geometry. Call [retrieve] with the
-  /// [MapBoxSuggestion.mapboxId] from a chosen suggestion to obtain complete
-  /// geographic data.
+  /// Provides [MapBoxGeocoding.forwardSearch] and [MapBoxGeocoding.reverseSearch].
+  final MapBoxGeocoding geocoding;
+
+  /// Client for the [Mapbox Search Box API](https://docs.mapbox.com/api/search/search-box/).
   ///
-  /// Pass a stable [SuggestQueryParams.sessionToken] (random UUID) to group
-  /// this call with the subsequent [retrieve] call into a single billable
-  /// Mapbox session.
-  Future<SuggestResponse> suggest(
-    String searchText, {
-    required SuggestQueryParams params,
-  }) async {
-    final uri = Uri(
-      scheme: 'https',
-      host: 'api.mapbox.com',
-      pathSegments: ['search', 'searchbox', 'v1', 'suggest'],
-      queryParameters: {
-        'q': searchText,
-        'access_token': _accessToken,
-        ...params.toMap(),
-      },
-    );
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw response.body;
-    }
-    return SuggestResponse.fromJson(response.body);
-  }
+  /// Provides [MapBoxSearchBox.forward], [MapBoxSearchBox.suggest], and
+  /// [MapBoxSearchBox.retrieve].
+  final MapBoxSearchBox searchBox;
 
-  /// Retrieves the full geographic feature for a suggestion identified by
-  /// [mapboxId].
-  ///
-  /// Pass the same [sessionToken] that was used in the [suggest] call so that
-  /// Mapbox can bill the pair as a single session.
-  Future<MapBoxResponse> retrieve(
-    String mapboxId, {
-    required String sessionToken,
-  }) async {
-    final uri = Uri(
-      scheme: 'https',
-      host: 'api.mapbox.com',
-      pathSegments: ['search', 'searchbox', 'v1', 'retrieve', mapboxId],
-      queryParameters: {
-        'access_token': _accessToken,
-        'session_token': sessionToken,
-      },
-    );
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw response.body;
-    }
-    return MapBoxResponse.fromJson(response.body);
-  }
-
-  Uri _buildUri(
-      String endpoint, String searchText, Map<String, dynamic> params) {
-    return Uri(
-      scheme: 'https',
-      host: 'api.mapbox.com',
-      pathSegments: ['geocoding', 'v5', endpoint, '$searchText.json'],
-      queryParameters: {
-        'access_token': _accessToken,
-        ...params,
-      },
-    );
-  }
-
-  Uri _buildSearchBoxUri(
-      String searchText, Map<String, dynamic> params) {
-    return Uri(
-      scheme: 'https',
-      host: 'api.mapbox.com',
-      pathSegments: ['search', 'searchbox', 'v1', 'forward'],
-      queryParameters: {
-        'q': searchText,
-        'access_token': _accessToken,
-        ...params,
-      },
-    );
-  }
+  MapBoxGeocoder(String accessToken)
+      : geocoding = MapBoxGeocoding(accessToken),
+        searchBox = MapBoxSearchBox(accessToken);
 }
