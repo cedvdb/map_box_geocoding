@@ -114,3 +114,47 @@ class SearchBoxQueryParams {
     return map;
   }
 }
+
+/// Query parameters for the Search Box `/suggest` endpoint.
+///
+/// The [sessionToken] should be a random UUID that is kept stable for the
+/// duration of a single autocomplete session (from the first keystroke until
+/// the user picks a result with [MapBoxGeocoder.retrieve]). Mapbox bills each
+/// session — rather than each individual request — as a single unit when a
+/// [sessionToken] is supplied.
+class SuggestQueryParams {
+  final String? language;
+  final String? country;
+  final int? limit;
+  final LatLon? proximity;
+  final List<PlaceType>? types;
+  final List<String>? poiCategories;
+
+  /// A random UUID that groups the `/suggest` and `/retrieve` calls for a
+  /// single autocomplete session into one billable unit.
+  final String? sessionToken;
+
+  const SuggestQueryParams({
+    this.language,
+    this.country,
+    this.limit,
+    this.proximity,
+    this.types,
+    this.poiCategories,
+    this.sessionToken,
+  });
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (language != null) map['language'] = language;
+    if (country != null) map['country'] = country;
+    if (limit != null) map['limit'] = limit.toString();
+    if (proximity != null) map['proximity'] = proximity!.toParamStr();
+    if (types != null) map['types'] = types!.map((type) => type.name).join(',');
+    if (poiCategories != null && poiCategories!.isNotEmpty) {
+      map['poi_category'] = poiCategories!.join(',');
+    }
+    if (sessionToken != null) map['session_token'] = sessionToken;
+    return map;
+  }
+}

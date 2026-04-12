@@ -1,3 +1,11 @@
+## 1.2.0
+
+- add `suggest` method targeting the Search Box `/suggest` endpoint for keystroke-by-keystroke autocomplete
+- add `retrieve` method targeting the Search Box `/retrieve/{mapbox_id}` endpoint to fetch full feature data
+- add `MapBoxSuggestion` model for lightweight suggestion items returned by `/suggest`
+- add `SuggestResponse` model wrapping the list of suggestions with attribution and response UUID
+- add `SuggestQueryParams` with support for `language`, `country`, `limit`, `proximity`, `types`, `poiCategories`, and `sessionToken` for Mapbox session-based billing
+
 ## 1.1.0
 
 - add `searchBoxForward` method targeting the Mapbox Search Box API (`/search/searchbox/v1/forward`)

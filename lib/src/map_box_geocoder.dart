@@ -49,6 +49,64 @@ class MapBoxGeocoder {
     return MapBoxResponse.fromJson(response.body);
   }
 
+  /// Returns lightweight autocomplete suggestions for [searchText] using the
+  /// Search Box `/suggest` endpoint.
+  ///
+  /// The suggestions do **not** contain full geometry. Call [retrieve] with the
+  /// [MapBoxSuggestion.mapboxId] from a chosen suggestion to obtain complete
+  /// geographic data.
+  ///
+  /// Pass a stable [SuggestQueryParams.sessionToken] (random UUID) to group
+  /// this call with the subsequent [retrieve] call into a single billable
+  /// Mapbox session.
+  Future<SuggestResponse> suggest(
+    String searchText, {
+    SuggestQueryParams params = const SuggestQueryParams(),
+  }) async {
+    final uri = Uri(
+      scheme: 'https',
+      host: 'api.mapbox.com',
+      pathSegments: ['search', 'searchbox', 'v1', 'suggest'],
+      queryParameters: {
+        'q': searchText,
+        'access_token': _accessToken,
+        ...params.toMap(),
+      },
+    );
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw response.body;
+    }
+    return SuggestResponse.fromJson(response.body);
+  }
+
+  /// Retrieves the full geographic feature for a suggestion identified by
+  /// [mapboxId].
+  ///
+  /// Pass the same [sessionToken] that was used in the [suggest] call so that
+  /// Mapbox can bill the pair as a single session.
+  Future<MapBoxResponse> retrieve(
+    String mapboxId, {
+    String? sessionToken,
+  }) async {
+    final queryParams = <String, dynamic>{
+      'access_token': _accessToken,
+    };
+    if (sessionToken != null) queryParams['session_token'] = sessionToken;
+
+    final uri = Uri(
+      scheme: 'https',
+      host: 'api.mapbox.com',
+      pathSegments: ['search', 'searchbox', 'v1', 'retrieve', mapboxId],
+      queryParameters: queryParams,
+    );
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw response.body;
+    }
+    return MapBoxResponse.fromJson(response.body);
+  }
+
   Uri _buildUri(
       String endpoint, String searchText, Map<String, dynamic> params) {
     return Uri(

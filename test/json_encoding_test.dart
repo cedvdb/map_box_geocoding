@@ -1,3 +1,4 @@
+import 'package:map_box_geocoder/src/map_box_query_params.dart';
 import 'package:map_box_geocoder/src/map_box_response.dart';
 import 'package:map_box_geocoder/src/values.dart';
 import 'package:test/test.dart';
@@ -33,5 +34,109 @@ void main() {
     expect(feature.placeType, equals([PlaceType.poi]));
     expect(feature.center.latitude, closeTo(48.857163, 0.0001));
     expect(feature.center.longitude, closeTo(2.351499, 0.0001));
+  });
+
+  group('SuggestResponse', () {
+    test('Should decode /suggest response', () {
+      final json = '''
+{
+  "suggestions": [
+    {
+      "mapbox_id": "dXJuOm1ieHBvaToxMjM0NTY",
+      "name": "Starbucks",
+      "address": "123 Main St",
+      "full_address": "123 Main St, Seattle, WA 98101, United States",
+      "place_formatted": "Seattle, Washington 98101, United States",
+      "feature_type": "poi",
+      "language": "en",
+      "maki": "cafe",
+      "poi_category": ["coffee", "cafe"]
+    },
+    {
+      "mapbox_id": "dXJuOm1ieHBvaTp3eHl6",
+      "name": "Starbucks Reserve",
+      "full_address": "1124 Pike St, Seattle, WA 98101, United States",
+      "place_formatted": "Seattle, Washington 98101, United States",
+      "feature_type": "poi",
+      "maki": "cafe",
+      "poi_category": []
+    }
+  ],
+  "attribution": "© 2026 Mapbox",
+  "response_uuid": "abc-123"
+}
+''';
+      final result = SuggestResponse.fromJson(json);
+      expect(result.suggestions, hasLength(2));
+      expect(result.attribution, equals('© 2026 Mapbox'));
+      expect(result.responseUuid, equals('abc-123'));
+
+      final first = result.suggestions.first;
+      expect(first.mapboxId, equals('dXJuOm1ieHBvaToxMjM0NTY'));
+      expect(first.name, equals('Starbucks'));
+      expect(first.address, equals('123 Main St'));
+      expect(first.fullAddress, equals('123 Main St, Seattle, WA 98101, United States'));
+      expect(first.placeFormatted, equals('Seattle, Washington 98101, United States'));
+      expect(first.featureType, equals('poi'));
+      expect(first.language, equals('en'));
+      expect(first.maki, equals('cafe'));
+      expect(first.poiCategories, equals(['coffee', 'cafe']));
+
+      final second = result.suggestions[1];
+      expect(second.mapboxId, equals('dXJuOm1ieHBvaTp3eHl6'));
+      expect(second.name, equals('Starbucks Reserve'));
+      expect(second.address, isNull);
+      expect(second.language, isNull);
+      expect(second.poiCategories, isEmpty);
+    });
+
+    test('Should decode empty suggestions list', () {
+      final json = '{"suggestions":[],"attribution":"© 2026 Mapbox","response_uuid":"uuid-1"}';
+      final result = SuggestResponse.fromJson(json);
+      expect(result.suggestions, isEmpty);
+    });
+  });
+
+  group('SuggestQueryParams', () {
+    test('toMap should include only non-null fields', () {
+      const params = SuggestQueryParams(
+        language: 'en',
+        country: 'us',
+        limit: 5,
+        sessionToken: 'my-uuid',
+      );
+      final map = params.toMap();
+      expect(map['language'], equals('en'));
+      expect(map['country'], equals('us'));
+      expect(map['limit'], equals('5'));
+      expect(map['session_token'], equals('my-uuid'));
+      expect(map.containsKey('proximity'), isFalse);
+      expect(map.containsKey('types'), isFalse);
+      expect(map.containsKey('poi_category'), isFalse);
+    });
+
+    test('toMap omits session_token when null', () {
+      const params = SuggestQueryParams(language: 'fr');
+      final map = params.toMap();
+      expect(map.containsKey('session_token'), isFalse);
+    });
+
+    test('toMap includes poi_category as comma-separated string', () {
+      const params = SuggestQueryParams(poiCategories: ['coffee_shop', 'cafe']);
+      final map = params.toMap();
+      expect(map['poi_category'], equals('coffee_shop,cafe'));
+    });
+
+    test('toMap includes types as comma-separated names', () {
+      const params = SuggestQueryParams(types: [PlaceType.poi, PlaceType.place]);
+      final map = params.toMap();
+      expect(map['types'], equals('poi,place'));
+    });
+
+    test('toMap omits poi_category when empty list', () {
+      const params = SuggestQueryParams(poiCategories: []);
+      final map = params.toMap();
+      expect(map.containsKey('poi_category'), isFalse);
+    });
   });
 }
