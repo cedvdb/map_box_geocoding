@@ -83,6 +83,8 @@ void main() {
   });
 
   group('search box suggest & retrieve', () {
+    const sessionToken = 'test-session-uuid-1234';
+
     test('Should return suggestions for a query', () async {
       final result = await geocoder.suggest(
         'Starbucks',
@@ -90,6 +92,7 @@ void main() {
           proximity: LatLon(48.8566, 2.3522),
           language: 'en',
           limit: 5,
+          sessionToken: sessionToken,
         ),
       );
       expect(result.suggestions, isNotEmpty);
@@ -105,12 +108,16 @@ void main() {
           proximity: LatLon(48.8566, 2.3522),
           language: 'en',
           limit: 1,
+          sessionToken: sessionToken,
         ),
       );
       expect(suggestResult.suggestions, isNotEmpty);
       final mapboxId = suggestResult.suggestions.first.mapboxId;
 
-      final retrieveResult = await geocoder.retrieve(mapboxId);
+      final retrieveResult = await geocoder.retrieve(
+        mapboxId,
+        sessionToken: sessionToken,
+      );
       expect(retrieveResult.features, isNotEmpty);
       final feature = retrieveResult.features.first;
       expect(feature.center.latitude, isNonZero);
@@ -118,7 +125,6 @@ void main() {
     });
 
     test('Should pass session token in suggest and retrieve', () async {
-      const sessionToken = 'test-session-uuid-1234';
       final suggestResult = await geocoder.suggest(
         'coffee',
         params: SuggestQueryParams(
