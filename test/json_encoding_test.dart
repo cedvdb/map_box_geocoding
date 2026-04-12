@@ -37,47 +37,45 @@ void main() {
   });
 
   test('Should decode properties.context from Search Box retrieve response', () {
-    // Mirrors the actual /retrieve response shape from the issue report.
     final responseJson = '''
 {
   "type": "FeatureCollection",
   "features": [
     {
       "type": "Feature",
-      "geometry": {"coordinates": [4.396115, 50.81745958], "type": "Point"},
+      "geometry": {"coordinates": [2.3514, 48.8566], "type": "Point"},
       "properties": {
-        "name": "Silversquare Delta",
-        "mapbox_id": "dXJuOm1ieHBvaTozZGZlMGJkOS1jZThkLTRkZGEtYjVjYi1lOTMyOGE3Y2JkZTc",
+        "name": "Test Cafe",
+        "mapbox_id": "test-mapbox-id-123",
         "feature_type": "poi",
-        "address": "Av. Arnaud Fraiteur 15/23",
-        "full_address": "Av. Arnaud Fraiteur 15/23, 1050 Ixelles, Belgium",
-        "place_formatted": "1050 Ixelles, Belgium",
+        "address": "1 Test Street",
+        "full_address": "1 Test Street, 75001 Test City, Testland",
+        "place_formatted": "75001 Test City, Testland",
         "context": {
           "country": {
-            "id": "",
-            "name": "Belgium",
-            "country_code": "BE",
-            "country_code_alpha_3": "BEL"
+            "id": "country-id-1",
+            "name": "Testland",
+            "country_code": "TL",
+            "country_code_alpha_3": "TLD"
           },
-          "postcode": {"id": "dXJuOm1ieHBsYzpyaFU", "name": "1050"},
-          "place": {"id": "dXJuOm1ieHBsYzpJS2dW", "name": "Ixelles"},
-          "locality": {"id": "dXJuOm1ieHBsYzpPV29W", "name": "Elsene"},
+          "postcode": {"id": "postcode-id-1", "name": "75001"},
+          "place": {"id": "place-id-1", "name": "Test City"},
+          "locality": {"id": "locality-id-1", "name": "Test District"},
           "address": {
-            "id": "",
-            "name": "Av. Arnaud Fraiteur 15/23",
-            "address_number": "15/23",
-            "street_name": "av. arnaud fraiteur"
+            "id": "address-id-1",
+            "name": "1 Test Street",
+            "address_number": "1",
+            "street_name": "test street"
           },
-          "street": {"id": "", "name": "av. arnaud fraiteur"}
+          "street": {"id": "street-id-1", "name": "test street"}
         },
-        "coordinates": {"latitude": 50.81745958, "longitude": 4.396115},
+        "coordinates": {"latitude": 48.8566, "longitude": 2.3514},
         "language": "en",
-        "maki": "building-alt1",
-        "poi_category": ["coworking space", "office"],
-        "poi_category_ids": ["coworking_space", "office"],
+        "maki": "cafe",
+        "poi_category": ["cafe"],
+        "poi_category_ids": ["cafe"],
         "external_ids": {},
-        "metadata": {"wheelchair_accessible": true},
-        "operational_status": "active"
+        "metadata": {}
       }
     }
   ],
@@ -91,32 +89,32 @@ void main() {
 
     // country
     expect(ctx.country, isNotNull);
-    expect(ctx.country!.name, equals('Belgium'));
-    expect(ctx.country!.countryCode, equals('BE'));
-    expect(ctx.country!.countryCodeAlpha3, equals('BEL'));
+    expect(ctx.country!.name, equals('Testland'));
+    expect(ctx.country!.countryCode, equals('TL'));
+    expect(ctx.country!.countryCodeAlpha3, equals('TLD'));
 
     // postcode
     expect(ctx.postcode, isNotNull);
-    expect(ctx.postcode!.id, equals('dXJuOm1ieHBsYzpyaFU'));
-    expect(ctx.postcode!.name, equals('1050'));
+    expect(ctx.postcode!.id, equals('postcode-id-1'));
+    expect(ctx.postcode!.name, equals('75001'));
 
     // place
     expect(ctx.place, isNotNull);
-    expect(ctx.place!.name, equals('Ixelles'));
+    expect(ctx.place!.name, equals('Test City'));
 
     // locality
     expect(ctx.locality, isNotNull);
-    expect(ctx.locality!.name, equals('Elsene'));
+    expect(ctx.locality!.name, equals('Test District'));
 
     // address
     expect(ctx.address, isNotNull);
-    expect(ctx.address!.name, equals('Av. Arnaud Fraiteur 15/23'));
-    expect(ctx.address!.addressNumber, equals('15/23'));
-    expect(ctx.address!.streetName, equals('av. arnaud fraiteur'));
+    expect(ctx.address!.name, equals('1 Test Street'));
+    expect(ctx.address!.addressNumber, equals('1'));
+    expect(ctx.address!.streetName, equals('test street'));
 
     // street
     expect(ctx.street, isNotNull);
-    expect(ctx.street!.name, equals('av. arnaud fraiteur'));
+    expect(ctx.street!.name, equals('test street'));
 
     // absent entries should be null
     expect(ctx.region, isNull);
