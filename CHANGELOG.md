@@ -1,3 +1,9 @@
+## 1.1.0
+
+- add `searchBoxForward` method targeting the Mapbox Search Box API (`/search/searchbox/v1/forward`)
+- add `SearchBoxQueryParams` with support for `language`, `country`, `limit`, `proximity`, `types`, and `poiCategories`
+- fix response parsing to handle Search Box API feature format (no `place_type`, `center`, `text`, or `place_name` at root level)
+
 ## 1.0.0
 - upgrade dependencies
 
