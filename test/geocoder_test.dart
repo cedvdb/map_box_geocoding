@@ -138,6 +138,30 @@ void main() {
       expect(feature.center.longitude, isNonZero);
     });
 
+    test('Should populate properties.context on retrieve', () async {
+      final suggestResult = await searchBox.suggest(
+        'coffee',
+        params: SuggestQueryParams(
+          proximity: LatLon(48.8566, 2.3522),
+          language: 'en',
+          limit: 1,
+          sessionToken: sessionToken,
+        ),
+      );
+      expect(suggestResult.suggestions, isNotEmpty);
+      final mapboxId = suggestResult.suggestions.first.mapboxId;
+
+      final retrieveResult = await searchBox.retrieve(
+        mapboxId,
+        sessionToken: sessionToken,
+      );
+      expect(retrieveResult.features, isNotEmpty);
+      final props = retrieveResult.features.first.properties!;
+      final ctx = props.context!;
+      expect(ctx.country, isNotNull);
+      expect(ctx.country!.name, isNotEmpty);
+    });
+
     test('Should pass session token in suggest and retrieve', () async {
       final suggestResult = await searchBox.suggest(
         'coffee',
