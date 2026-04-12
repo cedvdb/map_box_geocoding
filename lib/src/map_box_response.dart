@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:map_box_geocoder/src/values.dart';
 
 /// Lightweight suggestion returned by the Search Box `/suggest` endpoint.
-/// Does not contain full geometry — call [MapBoxGeocoder.retrieve] with the
+/// Does not contain full geometry — call [MapBoxSearchBox.retrieve] with the
 /// [mapboxId] to obtain a full [Feature].
 class MapBoxSuggestion {
   final String mapboxId;

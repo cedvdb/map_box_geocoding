@@ -119,7 +119,7 @@ class SearchBoxQueryParams {
 ///
 /// The [sessionToken] should be a random UUID that is kept stable for the
 /// duration of a single autocomplete session (from the first keystroke until
-/// the user picks a result with [MapBoxGeocoder.retrieve]). Mapbox bills each
+/// the user picks a result with [MapBoxSearchBox.retrieve]). Mapbox bills each
 /// session — rather than each individual request — as a single unit when a
 /// [sessionToken] is supplied.
 class SuggestQueryParams {

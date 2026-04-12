@@ -1,4 +1,37 @@
-## 1.2.0
+## 2.0.0
+
+**Breaking changes**
+
+- `MapBoxGeocoder` renamed to `MapBoxClient` (facade entry point)
+- Split into two focused API clients that mirror Mapbox's own API structure:
+  - `MapBoxGeocoding` — wraps the legacy [Geocoding API](https://docs.mapbox.com/api/search/geocoding/) (`forwardSearch`, `reverseSearch`)
+  - `MapBoxSearchBox` — wraps the [Search Box API](https://docs.mapbox.com/api/search/search-box/) (`forward`, `suggest`, `retrieve`)
+- `MapBoxClient` is a facade with `geocoding` (`MapBoxGeocoding`) and `searchBox` (`MapBoxSearchBox`) properties instead of exposing methods directly
+- `searchBoxForward` renamed to `forward` on `MapBoxSearchBox`
+
+**Migration guide**
+
+```dart
+// Before (1.x)
+final geocoder = MapBoxGeocoder(token);
+geocoder.forwardSearch('Paris');
+geocoder.reverseSearch(coords);
+geocoder.searchBoxForward('coffee');
+geocoder.suggest('Eiffel', params: SuggestQueryParams(sessionToken: token));
+geocoder.retrieve(id, sessionToken: token);
+
+// After (2.0)
+final client = MapBoxClient(token);
+client.geocoding.forwardSearch('Paris');
+client.geocoding.reverseSearch(coords);
+client.searchBox.forward('coffee');
+client.searchBox.suggest('Eiffel', params: SuggestQueryParams(sessionToken: token));
+client.searchBox.retrieve(id, sessionToken: token);
+
+// Or use the focused clients directly:
+final geocoding = MapBoxGeocoding(token);
+final searchBox = MapBoxSearchBox(token);
+```
 
 - add `suggest` method targeting the Search Box `/suggest` endpoint for keystroke-by-keystroke autocomplete
 - add `retrieve` method targeting the Search Box `/retrieve/{mapbox_id}` endpoint to fetch full feature data
