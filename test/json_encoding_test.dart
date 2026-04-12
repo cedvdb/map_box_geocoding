@@ -1,5 +1,5 @@
 import 'package:map_box_geocoder/src/map_box_response.dart';
-import 'package:test/scaffolding.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('Should decode json response', () {
