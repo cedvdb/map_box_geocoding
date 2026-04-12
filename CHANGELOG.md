@@ -2,10 +2,11 @@
 
 **Breaking changes**
 
-- Split `MapBoxGeocoder` into two focused API clients that mirror Mapbox's own API structure:
+- `MapBoxGeocoder` renamed to `MapBoxClient` (facade entry point)
+- Split into two focused API clients that mirror Mapbox's own API structure:
   - `MapBoxGeocoding` — wraps the legacy [Geocoding API](https://docs.mapbox.com/api/search/geocoding/) (`forwardSearch`, `reverseSearch`)
   - `MapBoxSearchBox` — wraps the [Search Box API](https://docs.mapbox.com/api/search/search-box/) (`forward`, `suggest`, `retrieve`)
-- `MapBoxGeocoder` is now a facade with `geocoding` (`MapBoxGeocoding`) and `searchBox` (`MapBoxSearchBox`) properties instead of exposing methods directly
+- `MapBoxClient` is a facade with `geocoding` (`MapBoxGeocoding`) and `searchBox` (`MapBoxSearchBox`) properties instead of exposing methods directly
 - `searchBoxForward` renamed to `forward` on `MapBoxSearchBox`
 
 **Migration guide**
@@ -20,12 +21,12 @@ geocoder.suggest('Eiffel', params: SuggestQueryParams(sessionToken: token));
 geocoder.retrieve(id, sessionToken: token);
 
 // After (2.0)
-final geocoder = MapBoxGeocoder(token);
-geocoder.geocoding.forwardSearch('Paris');
-geocoder.geocoding.reverseSearch(coords);
-geocoder.searchBox.forward('coffee');
-geocoder.searchBox.suggest('Eiffel', params: SuggestQueryParams(sessionToken: token));
-geocoder.searchBox.retrieve(id, sessionToken: token);
+final client = MapBoxClient(token);
+client.geocoding.forwardSearch('Paris');
+client.geocoding.reverseSearch(coords);
+client.searchBox.forward('coffee');
+client.searchBox.suggest('Eiffel', params: SuggestQueryParams(sessionToken: token));
+client.searchBox.retrieve(id, sessionToken: token);
 
 // Or use the focused clients directly:
 final geocoding = MapBoxGeocoding(token);

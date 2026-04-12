@@ -11,23 +11,23 @@ final street = '7 Rue du Dr. Lecène, Paris, France';
 
 void main() {
   final accessToken = const String.fromEnvironment('MAP_BOX_TOKEN');
-  late MapBoxGeocoder geocoder;
+  late MapBoxClient client;
   late MapBoxGeocoding geocoding;
   late MapBoxSearchBox searchBox;
 
   setUp(() {
-    geocoder = MapBoxGeocoder(accessToken);
+    client = MapBoxClient(accessToken);
     geocoding = MapBoxGeocoding(accessToken);
     searchBox = MapBoxSearchBox(accessToken);
   });
 
-  group('MapBoxGeocoder facade', () {
+  group('MapBoxClient facade', () {
     test('exposes a geocoding client', () {
-      expect(geocoder.geocoding, isA<MapBoxGeocoding>());
+      expect(client.geocoding, isA<MapBoxGeocoding>());
     });
 
     test('exposes a searchBox client', () {
-      expect(geocoder.searchBox, isA<MapBoxSearchBox>());
+      expect(client.searchBox, isA<MapBoxSearchBox>());
     });
   });
 

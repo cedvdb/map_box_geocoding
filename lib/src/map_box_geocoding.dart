@@ -9,7 +9,7 @@ import 'package:map_box_geocoder/src/values.dart';
 /// geocoding (coordinates → place name) via the legacy `/geocoding/v5/`
 /// endpoints.
 ///
-/// Obtain an instance directly or through [MapBoxGeocoder.geocoding].
+/// Obtain an instance directly or through [MapBoxClient.geocoding].
 class MapBoxGeocoding {
   final String _accessToken;
 

@@ -12,18 +12,18 @@ export 'map_box_search_box.dart';
 /// (forward search, autocomplete suggestions, and feature retrieval).
 ///
 /// ```dart
-/// final geocoder = MapBoxGeocoder('YOUR_MAPBOX_ACCESS_TOKEN');
+/// final client = MapBoxClient('YOUR_MAPBOX_ACCESS_TOKEN');
 ///
 /// // Legacy Geocoding API
-/// final result = await geocoder.geocoding.forwardSearch('Paris, France');
+/// final result = await client.geocoding.forwardSearch('Paris, France');
 ///
 /// // Search Box API
-/// final suggestions = await geocoder.searchBox.suggest(
+/// final suggestions = await client.searchBox.suggest(
 ///   'Eiffel',
 ///   params: SuggestQueryParams(sessionToken: sessionToken),
 /// );
 /// ```
-class MapBoxGeocoder {
+class MapBoxClient {
   /// Client for the legacy [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/).
   ///
   /// Provides [MapBoxGeocoding.forwardSearch] and [MapBoxGeocoding.reverseSearch].
@@ -35,7 +35,7 @@ class MapBoxGeocoder {
   /// [MapBoxSearchBox.retrieve].
   final MapBoxSearchBox searchBox;
 
-  MapBoxGeocoder(String accessToken)
+  MapBoxClient(String accessToken)
       : geocoding = MapBoxGeocoding(accessToken),
         searchBox = MapBoxSearchBox(accessToken);
 }

@@ -35,20 +35,20 @@ This package exposes two focused API clients that mirror Mapbox's own API struct
 | `MapBoxGeocoding` | [Geocoding API](https://docs.mapbox.com/api/search/geocoding/) | `forwardSearch`, `reverseSearch` |
 | `MapBoxSearchBox` | [Search Box API](https://docs.mapbox.com/api/search/search-box/) | `forward`, `suggest`, `retrieve` |
 
-You can use them directly or through the `MapBoxGeocoder` facade.
+You can use them directly or through the `MapBoxClient` facade.
 
 ### Using the facade
 
 ```dart
 import 'package:map_box_geocoder/map_box_geocoder.dart';
 
-final geocoder = MapBoxGeocoder('YOUR_MAPBOX_ACCESS_TOKEN');
+final client = MapBoxClient('YOUR_MAPBOX_ACCESS_TOKEN');
 
 // Legacy Geocoding API
-final result = await geocoder.geocoding.forwardSearch('Paris, France');
+final result = await client.geocoding.forwardSearch('Paris, France');
 
 // Search Box API
-final suggestions = await geocoder.searchBox.suggest(
+final suggestions = await client.searchBox.suggest(
   'Eiffel',
   params: SuggestQueryParams(sessionToken: mySessionToken, language: 'en'),
 );

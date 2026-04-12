@@ -8,7 +8,7 @@ import 'package:map_box_geocoder/src/map_box_response.dart';
 /// autocomplete suggestions, and retrieving full feature data for a selected
 /// suggestion via the `/search/searchbox/v1/` endpoints.
 ///
-/// Obtain an instance directly or through [MapBoxGeocoder.searchBox].
+/// Obtain an instance directly or through [MapBoxClient.searchBox].
 class MapBoxSearchBox {
   final String _accessToken;
 
