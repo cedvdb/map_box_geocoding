@@ -2,6 +2,93 @@ import 'dart:convert';
 
 import 'package:map_box_geocoder/src/values.dart';
 
+/// Lightweight suggestion returned by the Search Box `/suggest` endpoint.
+/// Does not contain full geometry — call [MapBoxGeocoder.retrieve] with the
+/// [mapboxId] to obtain a full [Feature].
+class MapBoxSuggestion {
+  final String mapboxId;
+  final String name;
+  final String? address;
+  final String? fullAddress;
+  final String? placeFormatted;
+  final String featureType;
+  final String? language;
+  final String? maki;
+  final List<String> poiCategories;
+
+  const MapBoxSuggestion({
+    required this.mapboxId,
+    required this.name,
+    this.address,
+    this.fullAddress,
+    this.placeFormatted,
+    required this.featureType,
+    this.language,
+    this.maki,
+    this.poiCategories = const [],
+  });
+
+  factory MapBoxSuggestion.fromMap(Map<String, dynamic> map) {
+    return MapBoxSuggestion(
+      mapboxId: map['mapbox_id'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      address: map['address'] as String?,
+      fullAddress: map['full_address'] as String?,
+      placeFormatted: map['place_formatted'] as String?,
+      featureType: map['feature_type'] as String? ?? '',
+      language: map['language'] as String?,
+      maki: map['maki'] as String?,
+      poiCategories: map['poi_category'] != null
+          ? List<String>.from(map['poi_category'] as List)
+          : const [],
+    );
+  }
+
+  factory MapBoxSuggestion.fromJson(String source) =>
+      MapBoxSuggestion.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'MapBoxSuggestion(mapboxId: $mapboxId, name: $name, address: $address, '
+        'fullAddress: $fullAddress, placeFormatted: $placeFormatted, '
+        'featureType: $featureType, language: $language, maki: $maki, '
+        'poiCategories: $poiCategories)';
+  }
+}
+
+/// Response from the Search Box `/suggest` endpoint.
+class SuggestResponse {
+  final List<MapBoxSuggestion> suggestions;
+  final String attribution;
+  final String responseUuid;
+
+  const SuggestResponse({
+    required this.suggestions,
+    required this.attribution,
+    required this.responseUuid,
+  });
+
+  factory SuggestResponse.fromMap(Map<String, dynamic> map) {
+    return SuggestResponse(
+      suggestions: List<MapBoxSuggestion>.from(
+        (map['suggestions'] as List? ?? [])
+            .map((x) => MapBoxSuggestion.fromMap(x as Map<String, dynamic>)),
+      ),
+      attribution: map['attribution'] as String? ?? '',
+      responseUuid: map['response_uuid'] as String? ?? '',
+    );
+  }
+
+  factory SuggestResponse.fromJson(String source) =>
+      SuggestResponse.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'SuggestResponse(suggestions: $suggestions, attribution: $attribution, '
+        'responseUuid: $responseUuid)';
+  }
+}
+
 class MapBoxResponse {
   final String type;
   final List<dynamic> query;

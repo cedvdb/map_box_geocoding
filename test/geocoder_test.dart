@@ -81,4 +81,67 @@ void main() {
       expect(result.features, isNotEmpty);
     });
   });
+
+  group('search box suggest & retrieve', () {
+    const sessionToken = 'test-session-uuid-1234';
+
+    test('Should return suggestions for a query', () async {
+      final result = await geocoder.suggest(
+        'Starbucks',
+        params: SuggestQueryParams(
+          proximity: LatLon(48.8566, 2.3522),
+          language: 'en',
+          limit: 5,
+          sessionToken: sessionToken,
+        ),
+      );
+      expect(result.suggestions, isNotEmpty);
+      final first = result.suggestions.first;
+      expect(first.mapboxId, isNotEmpty);
+      expect(first.name, isNotEmpty);
+    });
+
+    test('Should retrieve full feature for a suggestion', () async {
+      final suggestResult = await geocoder.suggest(
+        'Starbucks',
+        params: SuggestQueryParams(
+          proximity: LatLon(48.8566, 2.3522),
+          language: 'en',
+          limit: 1,
+          sessionToken: sessionToken,
+        ),
+      );
+      expect(suggestResult.suggestions, isNotEmpty);
+      final mapboxId = suggestResult.suggestions.first.mapboxId;
+
+      final retrieveResult = await geocoder.retrieve(
+        mapboxId,
+        sessionToken: sessionToken,
+      );
+      expect(retrieveResult.features, isNotEmpty);
+      final feature = retrieveResult.features.first;
+      expect(feature.center.latitude, isNonZero);
+      expect(feature.center.longitude, isNonZero);
+    });
+
+    test('Should pass session token in suggest and retrieve', () async {
+      final suggestResult = await geocoder.suggest(
+        'coffee',
+        params: SuggestQueryParams(
+          proximity: LatLon(48.8566, 2.3522),
+          language: 'en',
+          limit: 3,
+          sessionToken: sessionToken,
+        ),
+      );
+      expect(suggestResult.suggestions, isNotEmpty);
+
+      final mapboxId = suggestResult.suggestions.first.mapboxId;
+      final retrieveResult = await geocoder.retrieve(
+        mapboxId,
+        sessionToken: sessionToken,
+      );
+      expect(retrieveResult.features, isNotEmpty);
+    });
+  });
 }
