@@ -83,3 +83,34 @@ enum ReverseMode {
   distance,
   score,
 }
+
+class SearchBoxQueryParams {
+  final String? language;
+  final String? country;
+  final int? limit;
+  final LatLon? proximity;
+  final List<PlaceType>? types;
+  final List<String>? poiCategories;
+
+  const SearchBoxQueryParams({
+    this.language,
+    this.country,
+    this.limit,
+    this.proximity,
+    this.types,
+    this.poiCategories,
+  });
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (language != null) map['language'] = language;
+    if (country != null) map['country'] = country;
+    if (limit != null) map['limit'] = limit.toString();
+    if (proximity != null) map['proximity'] = proximity!.toParamStr();
+    if (types != null) map['types'] = types!.map((type) => type.name).join(',');
+    if (poiCategories != null && poiCategories!.isNotEmpty) {
+      map['poi_category'] = poiCategories!.join(',');
+    }
+    return map;
+  }
+}

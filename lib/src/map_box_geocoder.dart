@@ -34,6 +34,21 @@ class MapBoxGeocoder {
     return MapBoxResponse.fromJson(response.body);
   }
 
+  /// Search for places using the Mapbox Search Box API.
+  /// Unlike the legacy Geocoding API, the Search Box API supports filtering by
+  /// POI category via [SearchBoxQueryParams.poiCategories].
+  Future<MapBoxResponse> searchBoxForward(
+    String searchText, {
+    SearchBoxQueryParams params = const SearchBoxQueryParams(),
+  }) async {
+    final uri = _buildSearchBoxUri(searchText, params.toMap());
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw response.body;
+    }
+    return MapBoxResponse.fromJson(response.body);
+  }
+
   Uri _buildUri(
       String endpoint, String searchText, Map<String, dynamic> params) {
     return Uri(
@@ -41,6 +56,20 @@ class MapBoxGeocoder {
       host: 'api.mapbox.com',
       pathSegments: ['geocoding', 'v5', endpoint, '$searchText.json'],
       queryParameters: {
+        'access_token': _accessToken,
+        ...params,
+      },
+    );
+  }
+
+  Uri _buildSearchBoxUri(
+      String searchText, Map<String, dynamic> params) {
+    return Uri(
+      scheme: 'https',
+      host: 'api.mapbox.com',
+      pathSegments: ['search', 'searchbox', 'v1', 'forward'],
+      queryParameters: {
+        'q': searchText,
         'access_token': _accessToken,
         ...params,
       },

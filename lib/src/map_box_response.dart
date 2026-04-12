@@ -17,7 +17,7 @@ class MapBoxResponse {
   factory MapBoxResponse.fromMap(Map<String, dynamic> map) {
     return MapBoxResponse(
       type: map['type'] ?? '',
-      query: List<dynamic>.from(map['query']),
+      query: map['query'] != null ? List<dynamic>.from(map['query']) : [],
       features:
           List<Feature>.from(map['features'].map((x) => Feature.fromMap(x))),
       attribution: map['attribution'] ?? '',
@@ -62,25 +62,49 @@ class Feature {
   });
 
   factory Feature.fromMap(Map<String, dynamic> map) {
+    final props = map['properties'] as Map<String, dynamic>?;
+    // Search Box API uses 'feature_type' inside properties instead of 'place_type' at the root.
+    final rawPlaceType = map['place_type'] as List<dynamic>?;
+    final featureType = props?['feature_type'] as String?;
+    final placeType = rawPlaceType != null
+        ? rawPlaceType
+            .cast<String>()
+            .map((t) => PlaceType.values.byName(t))
+            .toList()
+        : (featureType != null &&
+                PlaceType.values.any((e) => e.name == featureType)
+            ? [PlaceType.values.byName(featureType)]
+            : <PlaceType>[]);
+
+    // Search Box API has no 'center' field; fall back to geometry coordinates.
+    LatLon center;
+    if (map['center'] != null) {
+      center = LatLon.fromList(map['center'] as List<dynamic>);
+    } else {
+      final geom = map['geometry'] as Map<String, dynamic>;
+      center = LatLon.fromList(geom['coordinates'] as List<dynamic>);
+    }
+
     return Feature(
-      id: map['id'] ?? '',
-      type: map['type'] ?? '',
-      placeType: (map['place_type'] as List<dynamic>)
-          .cast<String>()
-          .map(PlaceType.values.byName)
-          .toList(),
-      relevance: map['relevance']?.toDouble() ?? 0.0,
-      address: map['address'],
-      properties: map['properties'] != null
-          ? Properties.fromMap(map['properties'])
-          : null,
-      text: map['text'] ?? '',
-      placeName: map['place_name'] ?? '',
+      // Search Box API uses 'mapbox_id' inside properties instead of 'id' at root.
+      id: map['id'] as String? ?? props?['mapbox_id'] as String? ?? '',
+      type: map['type'] as String? ?? '',
+      placeType: placeType,
+      relevance: (map['relevance'] as num?)?.toDouble() ?? 0.0,
+      address: map['address'] as String? ?? props?['address'] as String?,
+      properties: props != null ? Properties.fromMap(props) : null,
+      // Search Box API uses 'properties.name' instead of 'text'.
+      text: map['text'] as String? ?? props?['name'] as String? ?? '',
+      // Search Box API uses 'properties.full_address' instead of 'place_name'.
+      placeName: map['place_name'] as String? ??
+          props?['full_address'] as String? ??
+          '',
       bbox: map['bbox'] != null ? List.from(map['bbox']).cast<double>() : null,
-      center: LatLon.fromList(map['center']),
-      geometry: Geometry.fromMap(map['geometry']),
+      center: center,
+      geometry: Geometry.fromMap(map['geometry'] as Map<String, dynamic>),
       context: map['context'] != null
-          ? List<Context>.from(map['context'].map((x) => Context.fromMap(x)))
+          ? List<Context>.from(
+              (map['context'] as List).map((x) => Context.fromMap(x)))
           : [],
     );
   }
