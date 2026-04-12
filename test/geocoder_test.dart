@@ -54,4 +54,31 @@ void main() {
       expect(result.features.first.text.contains('Lecène'), isTrue);
     });
   });
+
+  group('search box forward', () {
+    test('Should find POIs by name', () async {
+      final result = await geocoder.searchBoxForward(
+        'coffee',
+        params: SearchBoxQueryParams(
+          proximity: LatLon(48.8566, 2.3522),
+          language: 'en',
+          limit: 5,
+        ),
+      );
+      expect(result.features, isNotEmpty);
+    });
+
+    test('Should filter POIs by category', () async {
+      final result = await geocoder.searchBoxForward(
+        'coffee',
+        params: SearchBoxQueryParams(
+          proximity: LatLon(48.8566, 2.3522),
+          language: 'en',
+          limit: 5,
+          poiCategories: ['coffee_shop'],
+        ),
+      );
+      expect(result.features, isNotEmpty);
+    });
+  });
 }
