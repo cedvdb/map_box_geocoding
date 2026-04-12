@@ -8,4 +8,13 @@ void main() {
 ''';
     MapBoxResponse.fromJson(responseJson);
   });
+
+  test('Should decode Search Box json response (no query field)', () {
+    final responseJson = '''
+{"type":"FeatureCollection","features":[{"id":"poi.123456","type":"Feature","place_type":["poi"],"relevance":1,"properties":{"category":"coffee_shop"},"text":"Blue Bottle Coffee","place_name":"Blue Bottle Coffee, 300 Webster St, Oakland, California 94609, United States","center":[-122.2711,37.8079],"geometry":{"type":"Point","coordinates":[-122.2711,37.8079]},"context":[{"id":"place.987654","wikidata":"Q","text":"Oakland"}]}],"attribution":"NOTICE: © 2024 Mapbox and its suppliers. All rights reserved."}
+''';
+    final result = MapBoxResponse.fromJson(responseJson);
+    expect(result.query, isEmpty);
+    expect(result.features, isNotEmpty);
+  });
 }

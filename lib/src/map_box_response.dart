@@ -17,7 +17,7 @@ class MapBoxResponse {
   factory MapBoxResponse.fromMap(Map<String, dynamic> map) {
     return MapBoxResponse(
       type: map['type'] ?? '',
-      query: List<dynamic>.from(map['query']),
+      query: map['query'] != null ? List<dynamic>.from(map['query']) : [],
       features:
           List<Feature>.from(map['features'].map((x) => Feature.fromMap(x))),
       attribution: map['attribution'] ?? '',
