@@ -1,4 +1,5 @@
 import 'package:map_box_geocoder/src/map_box_response.dart';
+import 'package:map_box_geocoder/src/values.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -16,5 +17,21 @@ void main() {
     final result = MapBoxResponse.fromJson(responseJson);
     expect(result.query, isEmpty);
     expect(result.features, isNotEmpty);
+  });
+
+  test('Should decode real Search Box API response (no place_type / center / text fields)', () {
+    // Mirrors the actual Search Box API response shape from /search/searchbox/v1/forward
+    final responseJson = '''
+{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"coordinates":[2.351499,48.857163],"type":"Point"},"properties":{"name":"Hötel de ville","mapbox_id":"dXJuOm1ieHBvaTplYTAxOTIxLTI0YTYtNDc4YS1iOGI0LTlkMWU4N2E5NjUyMQ","feature_type":"poi","address":"8 Pl. de l\'Hôtel de Ville","full_address":"8 Pl. de l\'Hôtel de Ville, 75004 Paris, France","place_formatted":"75004 Paris, France","coordinates":{"latitude":48.857163,"longitude":2.351499},"language":"","maki":"cafe","poi_category":["café","coffee"],"poi_category_ids":["cafe","coffee_shop"],"external_ids":{},"metadata":{},"distance":81}}],"attribution":"© 2026 Mapbox and its suppliers. All rights reserved."}
+''';
+    final result = MapBoxResponse.fromJson(responseJson);
+    expect(result.query, isEmpty);
+    expect(result.features, hasLength(1));
+    final feature = result.features.first;
+    expect(feature.text, equals('Hötel de ville'));
+    expect(feature.placeName, equals('8 Pl. de l\'Hôtel de Ville, 75004 Paris, France'));
+    expect(feature.placeType, equals([PlaceType.poi]));
+    expect(feature.center.latitude, closeTo(48.857163, 0.0001));
+    expect(feature.center.longitude, closeTo(2.351499, 0.0001));
   });
 }
