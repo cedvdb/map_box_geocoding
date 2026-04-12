@@ -54,17 +54,6 @@ final suggestions = await client.searchBox.suggest(
 );
 ```
 
-### Using the clients directly
-
-```dart
-import 'package:map_box_geocoder/map_box_geocoder.dart';
-
-final geocoding = MapBoxGeocoding('YOUR_MAPBOX_ACCESS_TOKEN');
-final searchBox = MapBoxSearchBox('YOUR_MAPBOX_ACCESS_TOKEN');
-```
-
----
-
 ### Forward geocoding
 
 Convert a place name / address string into geographic coordinates.
