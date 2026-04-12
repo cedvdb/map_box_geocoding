@@ -36,6 +36,93 @@ void main() {
     expect(feature.center.longitude, closeTo(2.351499, 0.0001));
   });
 
+  test('Should decode properties.context from Search Box retrieve response', () {
+    // Mirrors the actual /retrieve response shape from the issue report.
+    final responseJson = '''
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {"coordinates": [4.396115, 50.81745958], "type": "Point"},
+      "properties": {
+        "name": "Silversquare Delta",
+        "mapbox_id": "dXJuOm1ieHBvaTozZGZlMGJkOS1jZThkLTRkZGEtYjVjYi1lOTMyOGE3Y2JkZTc",
+        "feature_type": "poi",
+        "address": "Av. Arnaud Fraiteur 15/23",
+        "full_address": "Av. Arnaud Fraiteur 15/23, 1050 Ixelles, Belgium",
+        "place_formatted": "1050 Ixelles, Belgium",
+        "context": {
+          "country": {
+            "id": "",
+            "name": "Belgium",
+            "country_code": "BE",
+            "country_code_alpha_3": "BEL"
+          },
+          "postcode": {"id": "dXJuOm1ieHBsYzpyaFU", "name": "1050"},
+          "place": {"id": "dXJuOm1ieHBsYzpJS2dW", "name": "Ixelles"},
+          "locality": {"id": "dXJuOm1ieHBsYzpPV29W", "name": "Elsene"},
+          "address": {
+            "id": "",
+            "name": "Av. Arnaud Fraiteur 15/23",
+            "address_number": "15/23",
+            "street_name": "av. arnaud fraiteur"
+          },
+          "street": {"id": "", "name": "av. arnaud fraiteur"}
+        },
+        "coordinates": {"latitude": 50.81745958, "longitude": 4.396115},
+        "language": "en",
+        "maki": "building-alt1",
+        "poi_category": ["coworking space", "office"],
+        "poi_category_ids": ["coworking_space", "office"],
+        "external_ids": {},
+        "metadata": {"wheelchair_accessible": true},
+        "operational_status": "active"
+      }
+    }
+  ],
+  "attribution": "© 2026 Mapbox and its suppliers. All rights reserved."
+}
+''';
+    final result = MapBoxResponse.fromJson(responseJson);
+    expect(result.features, hasLength(1));
+    final props = result.features.first.properties!;
+    final ctx = props.context!;
+
+    // country
+    expect(ctx.country, isNotNull);
+    expect(ctx.country!.name, equals('Belgium'));
+    expect(ctx.country!.countryCode, equals('BE'));
+    expect(ctx.country!.countryCodeAlpha3, equals('BEL'));
+
+    // postcode
+    expect(ctx.postcode, isNotNull);
+    expect(ctx.postcode!.id, equals('dXJuOm1ieHBsYzpyaFU'));
+    expect(ctx.postcode!.name, equals('1050'));
+
+    // place
+    expect(ctx.place, isNotNull);
+    expect(ctx.place!.name, equals('Ixelles'));
+
+    // locality
+    expect(ctx.locality, isNotNull);
+    expect(ctx.locality!.name, equals('Elsene'));
+
+    // address
+    expect(ctx.address, isNotNull);
+    expect(ctx.address!.name, equals('Av. Arnaud Fraiteur 15/23'));
+    expect(ctx.address!.addressNumber, equals('15/23'));
+    expect(ctx.address!.streetName, equals('av. arnaud fraiteur'));
+
+    // street
+    expect(ctx.street, isNotNull);
+    expect(ctx.street!.name, equals('av. arnaud fraiteur'));
+
+    // absent entries should be null
+    expect(ctx.region, isNull);
+    expect(ctx.neighborhood, isNull);
+  });
+
   group('SuggestResponse', () {
     test('Should decode /suggest response', () {
       final json = '''
