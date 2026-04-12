@@ -61,7 +61,7 @@ class MapBoxGeocoder {
   /// Mapbox session.
   Future<SuggestResponse> suggest(
     String searchText, {
-    SuggestQueryParams params = const SuggestQueryParams(),
+    required SuggestQueryParams params,
   }) async {
     final uri = Uri(
       scheme: 'https',
@@ -87,18 +87,16 @@ class MapBoxGeocoder {
   /// Mapbox can bill the pair as a single session.
   Future<MapBoxResponse> retrieve(
     String mapboxId, {
-    String? sessionToken,
+    required String sessionToken,
   }) async {
-    final queryParams = <String, dynamic>{
-      'access_token': _accessToken,
-    };
-    if (sessionToken != null) queryParams['session_token'] = sessionToken;
-
     final uri = Uri(
       scheme: 'https',
       host: 'api.mapbox.com',
       pathSegments: ['search', 'searchbox', 'v1', 'retrieve', mapboxId],
-      queryParameters: queryParams,
+      queryParameters: {
+        'access_token': _accessToken,
+        'session_token': sessionToken,
+      },
     );
     final response = await http.get(uri);
     if (response.statusCode != 200) {

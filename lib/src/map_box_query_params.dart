@@ -132,20 +132,21 @@ class SuggestQueryParams {
 
   /// A random UUID that groups the `/suggest` and `/retrieve` calls for a
   /// single autocomplete session into one billable unit.
-  final String? sessionToken;
+  final String sessionToken;
 
   const SuggestQueryParams({
+    required this.sessionToken,
     this.language,
     this.country,
     this.limit,
     this.proximity,
     this.types,
     this.poiCategories,
-    this.sessionToken,
   });
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
+    map['session_token'] = sessionToken;
     if (language != null) map['language'] = language;
     if (country != null) map['country'] = country;
     if (limit != null) map['limit'] = limit.toString();
@@ -154,7 +155,6 @@ class SuggestQueryParams {
     if (poiCategories != null && poiCategories!.isNotEmpty) {
       map['poi_category'] = poiCategories!.join(',');
     }
-    if (sessionToken != null) map['session_token'] = sessionToken;
     return map;
   }
 }

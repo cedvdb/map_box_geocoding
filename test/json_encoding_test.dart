@@ -100,10 +100,10 @@ void main() {
   group('SuggestQueryParams', () {
     test('toMap should include only non-null fields', () {
       const params = SuggestQueryParams(
+        sessionToken: 'my-uuid',
         language: 'en',
         country: 'us',
         limit: 5,
-        sessionToken: 'my-uuid',
       );
       final map = params.toMap();
       expect(map['language'], equals('en'));
@@ -115,26 +115,32 @@ void main() {
       expect(map.containsKey('poi_category'), isFalse);
     });
 
-    test('toMap omits session_token when null', () {
-      const params = SuggestQueryParams(language: 'fr');
+    test('toMap always includes session_token', () {
+      const params = SuggestQueryParams(sessionToken: 'tok', language: 'fr');
       final map = params.toMap();
-      expect(map.containsKey('session_token'), isFalse);
+      expect(map['session_token'], equals('tok'));
     });
 
     test('toMap includes poi_category as comma-separated string', () {
-      const params = SuggestQueryParams(poiCategories: ['coffee_shop', 'cafe']);
+      const params = SuggestQueryParams(
+        sessionToken: 'tok',
+        poiCategories: ['coffee_shop', 'cafe'],
+      );
       final map = params.toMap();
       expect(map['poi_category'], equals('coffee_shop,cafe'));
     });
 
     test('toMap includes types as comma-separated names', () {
-      const params = SuggestQueryParams(types: [PlaceType.poi, PlaceType.place]);
+      const params = SuggestQueryParams(
+        sessionToken: 'tok',
+        types: [PlaceType.poi, PlaceType.place],
+      );
       final map = params.toMap();
       expect(map['types'], equals('poi,place'));
     });
 
     test('toMap omits poi_category when empty list', () {
-      const params = SuggestQueryParams(poiCategories: []);
+      const params = SuggestQueryParams(sessionToken: 'tok', poiCategories: []);
       final map = params.toMap();
       expect(map.containsKey('poi_category'), isFalse);
     });
