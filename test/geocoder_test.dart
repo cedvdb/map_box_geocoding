@@ -8,12 +8,15 @@ final streetCoords = LatLon(
   2.353356,
 );
 final street = '7 Rue du Dr. Lecène, Paris, France';
-void main(List<String> args) {
-  final accessToken = args[0];
+
+void main() {
+  final accessToken = const String.fromEnvironment('MAP_BOX_TOKEN');
   late MapBoxGeocoder geocoder;
+
   setUp(() {
     geocoder = MapBoxGeocoder(accessToken);
   });
+
   group('forward geocoding', () {
     test('Should find exact coordinates of address', () async {
       final result = await geocoder.forwardSearch(street);
