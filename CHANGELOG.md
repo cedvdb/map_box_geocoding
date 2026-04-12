@@ -1,3 +1,9 @@
+## 2.1.0
+
+- add `PropertiesContext` model for Search Box `feature.properties.context`
+- add `PropertiesContextEntry` model for individual context entries (`country`, `postcode`, `place`, `region`, `locality`, `neighborhood`, `address`, `street`)
+- add `context` field to `Properties`, populated from Search Box `/retrieve` and `/forward` responses
+
 ## 2.0.0
 
 **Breaking changes**

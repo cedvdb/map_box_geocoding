@@ -36,6 +36,91 @@ void main() {
     expect(feature.center.longitude, closeTo(2.351499, 0.0001));
   });
 
+  test('Should decode properties.context from Search Box retrieve response', () {
+    final responseJson = '''
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {"coordinates": [2.3514, 48.8566], "type": "Point"},
+      "properties": {
+        "name": "Test Cafe",
+        "mapbox_id": "test-mapbox-id-123",
+        "feature_type": "poi",
+        "address": "1 Test Street",
+        "full_address": "1 Test Street, 75001 Test City, Testland",
+        "place_formatted": "75001 Test City, Testland",
+        "context": {
+          "country": {
+            "id": "country-id-1",
+            "name": "Testland",
+            "country_code": "TL",
+            "country_code_alpha_3": "TLD"
+          },
+          "postcode": {"id": "postcode-id-1", "name": "75001"},
+          "place": {"id": "place-id-1", "name": "Test City"},
+          "locality": {"id": "locality-id-1", "name": "Test District"},
+          "address": {
+            "id": "address-id-1",
+            "name": "1 Test Street",
+            "address_number": "1",
+            "street_name": "test street"
+          },
+          "street": {"id": "street-id-1", "name": "test street"}
+        },
+        "coordinates": {"latitude": 48.8566, "longitude": 2.3514},
+        "language": "en",
+        "maki": "cafe",
+        "poi_category": ["cafe"],
+        "poi_category_ids": ["cafe"],
+        "external_ids": {},
+        "metadata": {}
+      }
+    }
+  ],
+  "attribution": "© 2026 Mapbox and its suppliers. All rights reserved."
+}
+''';
+    final result = MapBoxResponse.fromJson(responseJson);
+    expect(result.features, hasLength(1));
+    final props = result.features.first.properties!;
+    final ctx = props.context!;
+
+    // country
+    expect(ctx.country, isNotNull);
+    expect(ctx.country!.name, equals('Testland'));
+    expect(ctx.country!.countryCode, equals('TL'));
+    expect(ctx.country!.countryCodeAlpha3, equals('TLD'));
+
+    // postcode
+    expect(ctx.postcode, isNotNull);
+    expect(ctx.postcode!.id, equals('postcode-id-1'));
+    expect(ctx.postcode!.name, equals('75001'));
+
+    // place
+    expect(ctx.place, isNotNull);
+    expect(ctx.place!.name, equals('Test City'));
+
+    // locality
+    expect(ctx.locality, isNotNull);
+    expect(ctx.locality!.name, equals('Test District'));
+
+    // address
+    expect(ctx.address, isNotNull);
+    expect(ctx.address!.name, equals('1 Test Street'));
+    expect(ctx.address!.addressNumber, equals('1'));
+    expect(ctx.address!.streetName, equals('test street'));
+
+    // street
+    expect(ctx.street, isNotNull);
+    expect(ctx.street!.name, equals('test street'));
+
+    // absent entries should be null
+    expect(ctx.region, isNull);
+    expect(ctx.neighborhood, isNull);
+  });
+
   group('SuggestResponse', () {
     test('Should decode /suggest response', () {
       final json = '''

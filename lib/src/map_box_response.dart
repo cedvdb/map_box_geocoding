@@ -205,18 +205,118 @@ class Feature {
   }
 }
 
+/// A single named entry within [PropertiesContext] (e.g. country, postcode, place).
+class PropertiesContextEntry {
+  final String id;
+  final String name;
+
+  /// ISO 3166-1 alpha-2 country code (present on the `country` entry).
+  final String? countryCode;
+
+  /// ISO 3166-1 alpha-3 country code (present on the `country` entry).
+  final String? countryCodeAlpha3;
+
+  /// House / building number (present on the `address` entry).
+  final String? addressNumber;
+
+  /// Street name (present on the `address` and `street` entries).
+  final String? streetName;
+
+  PropertiesContextEntry({
+    required this.id,
+    required this.name,
+    this.countryCode,
+    this.countryCodeAlpha3,
+    this.addressNumber,
+    this.streetName,
+  });
+
+  factory PropertiesContextEntry.fromMap(Map<String, dynamic> map) {
+    return PropertiesContextEntry(
+      id: map['id'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      countryCode: map['country_code'] as String?,
+      countryCodeAlpha3: map['country_code_alpha_3'] as String?,
+      addressNumber: map['address_number'] as String?,
+      streetName: map['street_name'] as String?,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'PropertiesContextEntry(id: $id, name: $name, '
+        'countryCode: $countryCode, countryCodeAlpha3: $countryCodeAlpha3, '
+        'addressNumber: $addressNumber, streetName: $streetName)';
+  }
+}
+
+/// Structured context returned inside `feature.properties.context` by the
+/// Search Box API (`/retrieve` and `/forward` endpoints).
+class PropertiesContext {
+  final PropertiesContextEntry? country;
+  final PropertiesContextEntry? postcode;
+  final PropertiesContextEntry? place;
+  final PropertiesContextEntry? region;
+  final PropertiesContextEntry? locality;
+  final PropertiesContextEntry? neighborhood;
+  final PropertiesContextEntry? address;
+  final PropertiesContextEntry? street;
+
+  PropertiesContext({
+    this.country,
+    this.postcode,
+    this.place,
+    this.region,
+    this.locality,
+    this.neighborhood,
+    this.address,
+    this.street,
+  });
+
+  factory PropertiesContext.fromMap(Map<String, dynamic> map) {
+    PropertiesContextEntry? _entry(String key) {
+      final raw = map[key];
+      if (raw == null) return null;
+      return PropertiesContextEntry.fromMap(raw as Map<String, dynamic>);
+    }
+
+    return PropertiesContext(
+      country: _entry('country'),
+      postcode: _entry('postcode'),
+      place: _entry('place'),
+      region: _entry('region'),
+      locality: _entry('locality'),
+      neighborhood: _entry('neighborhood'),
+      address: _entry('address'),
+      street: _entry('street'),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'PropertiesContext(country: $country, postcode: $postcode, '
+        'place: $place, region: $region, locality: $locality, '
+        'neighborhood: $neighborhood, address: $address, street: $street)';
+  }
+}
+
 class Properties {
   final String? accuracy;
   final String? address;
   final String? category;
   final String? wikidata;
   final String? shortCode;
+
+  /// Structured context available in Search Box API responses.
+  final PropertiesContext? context;
+
   Properties({
     this.accuracy,
     this.address,
     this.category,
     this.wikidata,
     this.shortCode,
+    this.context,
   });
 
   factory Properties.fromMap(Map<String, dynamic> map) {
@@ -226,6 +326,9 @@ class Properties {
       category: map['category'],
       wikidata: map['wikidata'],
       shortCode: map['shortCode'],
+      context: map['context'] != null
+          ? PropertiesContext.fromMap(map['context'] as Map<String, dynamic>)
+          : null,
     );
   }
 
